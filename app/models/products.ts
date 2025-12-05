@@ -1,7 +1,9 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
-import type { HasMany } from '@adonisjs/lucid/types/relations'   
-import Image from '#models/images'                               
+import { BaseModel, column, hasMany, hasOne} from '@adonisjs/lucid/orm'
+import type { HasMany, HasOne } from '@adonisjs/lucid/types/relations'   
+import Image from '#models/images'     
+import CartItem from '#models/cart_item'
+import Stock from '#models/stock'
 
 export default class Product extends BaseModel {
   @column({ isPrimary: true })
@@ -24,4 +26,10 @@ export default class Product extends BaseModel {
 
   @hasMany(() => Image)
   public images!: HasMany<typeof Image>
+
+  @hasMany(() => CartItem)
+  declare cartItems: HasMany<typeof CartItem>
+
+  @hasOne(() => Stock)
+  declare stock: HasOne<typeof Stock>
 }

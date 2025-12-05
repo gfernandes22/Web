@@ -10,14 +10,18 @@ import Product from '#models/products'
 export default class ProductsController {
 
   public async index({ view }: HttpContext) {
-    const products = await Product.all()
+    const products = await Product.query().preload('images')
 
     return view.render('pages/products/index', { products })
   }
 
   public async show({ params, view }: HttpContext) {
-    const product = await Product.findOrFail(params.id)
-
+    const product = await Product
+      .query()
+      .where('id', params.id)
+      .preload('images')
+      .firstOrFail()
+      
     return view.render('pages/products/show', { product })
   }
 

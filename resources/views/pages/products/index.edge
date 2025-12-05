@@ -1,57 +1,98 @@
-@layouts.app({ title: 'Produtos' })
+@layouts.app( { title: 'Produtos' })
 
-  @slot('main')
-  <body>
-    <div>
-      <h1 class="h1">Lista de Produtos</h1>
-    </div>
+@slot('main')
 
-    <div class="overflow-x-auto">
-      <table class="table">
+<body>
+  <div>
+    <h1 class="h1">Lista de Produtos</h1>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="table">
+
+      <thead>
+        <tr>
+          <th>Foto</th>
+          <th>Nome</th>
+          <th>Descrição</th>
+          <th>Preço</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @each(product in products)
+        <tr>
+          <td>
+            <div class="w-105 h-29 bg-gray-200 rounded overflow-hidden flex-shrink-0">
+              @if(product.images && product.images.length > 0)
+              @each(image in product.images)
+              <img src="{{ route('images.show', { name: image.name }) }}" alt="{{ product.name }}"
+                class="object-cover w-full h-full">
+              @break
+              @endeach
+              @else
+              <span class="text-xs text-gray-500 flex items-center justify-center h-full">Sem Foto</span>
+              @endif
+            </div>
+          </td>
+          <td>{{ product.name }}</td>
+          <td>{{ product.description }}</td>
+          <td>{{ product.price }}</td>
+
+          <td>
+            <div style="display: flex; gap: 5px; align-items: center;">
+
+              <a href="{{ route('products.show', { id: product.id }) }}" class="btn btn-action">Ver</a>
+              <a href="{{ route('products.edit', { id: product.id }) }}" class="btn btn-action">Editar</a>
+              
+         
+              <a href="{{ route('stocks.create', { id: product.id }) }}" class="btn btn-action btn-warning">
+                Ajustar Estoque
+              </a>
         
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>Descrição</th>
-            <th>Preço</th>
-            <th></th>
-          </tr>
-        </thead>
-        
-        <tbody>
-          @each(product in products)
-            <tr>
-              <td>{{ product.name }}</td>
-              <td>{{ product.description }}</td>
-              <td>{{ product.price }}</td>
-              <td>
+            
 
-              <div style="display: flex; gap: 5px;">
+          <form action="{{ route('cart.add') }}" method="POST" style="display: flex; align-items: center; gap: 5px;">
+            {{ csrfField() }}
+            <input type="hidden" name="productId" value="{{ product.id }}">
 
-                <a href="{{ route('products.show', { id: product.id }) }}" class="btn btn-action">Ver</a>
-                <a href="{{ route('products.edit', { id: product.id }) }}" class="btn btn-action">Editar</a>
+            <div style="display: flex; align-items: center;">
+              <label for="quantity" class="font-semibold text-sm mr-1">Qtd:</label>
+              <input type="number" id="quantity" name="quantity" value="1" min="1"
+                class="w-12 p-1 border rounded text-center text-sm">
+            </div>
 
-                @form({ action: route('products.destroy', { id: product.id }, { qs: { _method: 'DELETE' } }) })
-                  <button type="submit" class="btn btn-action btn-danger">Deletar</button>  
-                @end
+            <button type="submit" class="btn btn-action btn-primary">
+              Adicionar ao Carrinho
+            </button>
+          </form>
 
-              </div>
+          @form({ action: route('products.destroy', { id: product.id }, { qs: { _method: 'DELETE' } }) })
+          <button type="submit" class="text-red-500 hover:text-red-700 transition duration-150 p-1"
+            title="Apagar produto">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 7l-.86 12.32A2 2 0 0116.03 21H7.97a2 2 0 01-1.91-1.68L5 7m14 0h-4m-6 0H5M12 4v4m0 0v4m0-4h4m-4 0h-4" />
+            </svg>
+          </button>
+          @end
 
-            </td>
-            </td>
-            </tr>
-          @endeach
-        </tbody>
+  </div>
+  </td>
+  </tr>
+  @endeach
+  </tbody>
 
-      </table>
-    </div>
+  </table>
+  </div>
 
-    <div style="margin-top: 30px;">
-      <span>
-        <a href="{{ route('products.create') }}" class="button">Adicionar Produto</a>
-      </span>
-    </div>
-  </body>
-  @end
-
+  <div style="margin-top: 30px;">
+    <span>
+      <a href="{{ route('products.create') }}" class="button">Adicionar Produto</a>
+    </span>
+  </div>
+</body>
+@end
 @end

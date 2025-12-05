@@ -33,6 +33,14 @@ router.get('/products', [ProductsController, 'index']).as('products.index')
 
 router.group(() => {
 
+  router.get('products/:id/stock/adjust', [() => import('#controllers/stock_controller'), 'create']).as('stocks.create')
+  router.post('products/:id/stock/adjust', [() => import('#controllers/stock_controller'), 'update']).as('stocks.update')
+
+  router.get('/carrinho', [() => import('#controllers/cart_controller'), 'index']).as('cart.index')
+  router.post('/carrinho/adicionar', [() => import('#controllers/cart_controller'), 'add']).as('cart.add')
+  router.post('/carrinho/atualizar', [() => import('#controllers/cart_controller'), 'update']).as('cart.update')
+  router.post('/carrinho/remover/:id', [() => import('#controllers/cart_controller'), 'remove']).as('cart.remove')
+
   router.get('/products/create', [ProductsController, 'create']).as('products.create')
   router.post('/products', [ProductsController, 'store']).as('products.store')
   router.get('/products/:id/edit', [ProductsController, 'edit']).as('products.edit')
